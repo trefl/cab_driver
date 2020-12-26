@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 
@@ -18,11 +19,12 @@ class _MainPageState extends State<MainPage>{
       body: Center(
         child: MaterialButton(
           onPressed: (){
-
+            DatabaseReference ref = FirebaseDatabase.instance.reference().child('testing');
+            ref.set('testing connection');
           },
           color: Colors.blue,
           minWidth: 200,
-          child: Text('Hello'),
+          child: Text('Test Connection'),
 
         ),
       ),
