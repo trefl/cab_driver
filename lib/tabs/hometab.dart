@@ -5,6 +5,7 @@ import 'package:cab_driver/globalvariables.dart';
 import 'package:cab_driver/helpers/pushnotificationservice.dart';
 import 'package:cab_driver/widgets/AvailabilityButton.dart';
 import 'package:cab_driver/widgets/ConfirmSheet.dart';
+import 'package:cab_driver/widgets/NotificationDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -94,8 +95,7 @@ class _HomeTabState extends State<HomeTab> {
                 color: availabilityColor,
                 onPressed: (){
 
-                  //GoOnline();
-                  //getLocationUpdates();
+
 
                   showModalBottomSheet(
                     isDismissible: false,
@@ -136,10 +136,6 @@ class _HomeTabState extends State<HomeTab> {
             ],
           ),
         )
-
-
-
-
       ],
     );
   }

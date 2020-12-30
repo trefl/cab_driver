@@ -1,10 +1,7 @@
-
-
-
-import 'dart:io';
-
+//import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:cab_driver/datamodels/tripdetails.dart';
 import 'package:cab_driver/globalvariables.dart';
+import 'package:cab_driver/widgets/NotificationDialog.dart';
 import 'package:cab_driver/widgets/ProgressDialog.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -19,12 +16,17 @@ class PushNotificationService{
     fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
         fetchRideInfo(getRideID(message), context);
+        print("onMessage: $message");
       },
       onLaunch: (Map<String, dynamic> message) async {
         fetchRideInfo(getRideID(message), context);
+        print("onLaunch: $message");
+
       },
       onResume: (Map<String, dynamic> message) async {
         fetchRideInfo(getRideID(message), context);
+        print("onresume: $message");
+
       },
 
     );
@@ -66,6 +68,13 @@ class PushNotificationService{
       Navigator.pop(context);
 
       if(snapshot.value != null){
+
+        //final assetsAudioPlayer = AssetsAudioPlayer();
+        //assetsAudioPlayer.open(
+          //  Audio('sounds/alert.mp3'),
+        //);
+        //assetsAudioPlayer.play();
+        
         double pickupLat = double.parse(snapshot.value['location']['latitude'].toString());
         double pickupLng = double.parse(snapshot.value['location']['longitude'].toString());
         String pickupAddress = snapshot.value['pickup_address'].toString();
@@ -86,11 +95,12 @@ class PushNotificationService{
 
 
         print(tripDetails.destinationAddress);
-
-
-
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => NotificationDialog(tripDetails: tripDetails,),
+        );
       }
-
     });
   }
 
