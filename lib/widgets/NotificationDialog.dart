@@ -1,10 +1,16 @@
+
+
 import 'package:cab_driver/brand_colors.dart';
 import 'package:cab_driver/datamodels/tripdetails.dart';
 import 'package:cab_driver/globalvariables.dart';
+import 'package:cab_driver/screens/newtrippage.dart';
 import 'package:cab_driver/widgets/BrandDivier.dart';
+import 'package:cab_driver/widgets/ProgressDialog.dart';
 import 'package:cab_driver/widgets/TaxiButton.dart';
 import 'package:cab_driver/widgets/TaxiOutlineButton.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 class NotificationDialog extends StatelessWidget {
 
@@ -118,7 +124,7 @@ class NotificationDialog extends StatelessWidget {
                         color: BrandColors.colorGreen,
                         onPressed: () async {
                            assetsAudioPlayer.stop();
-                            //checkAvailablity(context);
+                            checkAvailability(context);
                         },
                       ),
                     ),
@@ -134,5 +140,50 @@ class NotificationDialog extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void checkAvailability(context){
+
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) => ProgressDialog(status: 'Accepting request',),
+
+
+    );
+
+    DatabaseReference newRideRef = FirebaseDatabase.instance.reference().child('drivers/${currentFirebaseUser.uid}/newtrip');
+    newRideRef.once().then((DataSnapshot snapshot){
+
+      Navigator.pop(context);
+      Navigator.pop(context);
+
+
+      String thisRideID = "";
+      if(snapshot.value != null){
+        thisRideID = snapshot.value.toString();
+      }
+      else{
+        Toast.show("nie znaleziono", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
+      }
+
+      if(thisRideID == tripDetails.rideID){
+        newRideRef.set('accepted');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => NewTripPage(tripDetails: tripDetails,)),
+        );
+      }
+      else if(thisRideID == 'cancelled'){
+        Toast.show("Przejazd został anulowany", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
+
+      }
+      else if(thisRideID == 'timeout'){
+        Toast.show("przekroczono czas", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
+      }
+      else{
+        Toast.show("nie znaleziono", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
+      }
+    });
   }
 }
