@@ -1,4 +1,4 @@
-//import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:cab_driver/datamodels/tripdetails.dart';
 import 'package:cab_driver/globalvariables.dart';
 import 'package:cab_driver/widgets/NotificationDialog.dart';
@@ -69,11 +69,10 @@ class PushNotificationService{
 
       if(snapshot.value != null){
 
-        //final assetsAudioPlayer = AssetsAudioPlayer();
-        //assetsAudioPlayer.open(
-          //  Audio('sounds/alert.mp3'),
-        //);
-        //assetsAudioPlayer.play();
+        assetsAudioPlayer.open(
+            Audio('sounds/alert.mp3'),
+        );
+        assetsAudioPlayer.play();
         
         double pickupLat = double.parse(snapshot.value['location']['latitude'].toString());
         double pickupLng = double.parse(snapshot.value['location']['longitude'].toString());

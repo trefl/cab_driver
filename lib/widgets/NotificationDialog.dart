@@ -1,5 +1,6 @@
 import 'package:cab_driver/brand_colors.dart';
 import 'package:cab_driver/datamodels/tripdetails.dart';
+import 'package:cab_driver/globalvariables.dart';
 import 'package:cab_driver/widgets/BrandDivier.dart';
 import 'package:cab_driver/widgets/TaxiButton.dart';
 import 'package:cab_driver/widgets/TaxiOutlineButton.dart';
@@ -101,7 +102,7 @@ class NotificationDialog extends StatelessWidget {
                         title: 'Odrzuć',
                         color: BrandColors.colorPrimary,
                         onPressed: () async {
-                          // assetsAudioPlayer.stop();
+                           assetsAudioPlayer.stop();
                           Navigator.pop(context);
                         },
                       ),
@@ -116,8 +117,8 @@ class NotificationDialog extends StatelessWidget {
                         title: 'Akceptuj',
                         color: BrandColors.colorGreen,
                         onPressed: () async {
-                          // assetsAudioPlayer.stop();
-                          //  checkAvailablity(context);
+                           assetsAudioPlayer.stop();
+                            //checkAvailablity(context);
                         },
                       ),
                     ),
