@@ -42,6 +42,12 @@ class _NewTripPageState extends State<NewTripPage> {
 
   Position myPosition;
 
+  String status = 'accepted';
+
+  String durationString = '';
+
+  bool isRequestingDirection = false;
+
   void createMarker(){
     if(movingMarkerIcon == null){
       ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: Size(2, 2));
@@ -128,7 +134,7 @@ class _NewTripPageState extends State<NewTripPage> {
                   children: <Widget>[
 
                     Text(
-                      '14 mins',
+                      durationString,
                       style: TextStyle(
                         fontSize: 14,
                         fontFamily: 'Brand-Bold',
@@ -266,8 +272,52 @@ class _NewTripPageState extends State<NewTripPage> {
       });
 
       oldPosition = pos;
+      updateTripDetails();
+
+      Map locationMap = {
+        'latitude': myPosition.latitude.toString(),
+        'longitude': myPosition.longitude.toString(),
+      };
+
+      rideRef.child('driver_location').set(locationMap);
 
     });
+
+  }
+
+  void updateTripDetails() async {
+
+    if(!isRequestingDirection){
+
+      isRequestingDirection = true;
+
+      if(myPosition == null){
+        return;
+      }
+
+      var positionLatLng = LatLng(myPosition.latitude, myPosition.longitude);
+
+      LatLng destinationLatLng;
+
+      if(status == 'accepted'){
+        destinationLatLng = widget.tripDetails.pickup;
+      }
+      else{
+        destinationLatLng = widget.tripDetails.destination;
+      }
+
+      var directionDetails = await HelperMethods.getDirectionDetails(positionLatLng, destinationLatLng);
+
+      if(directionDetails != null){
+
+        setState(() {
+          durationString = directionDetails.durationText;
+        });
+
+      }
+      isRequestingDirection = false;
+
+    }
 
   }
 
