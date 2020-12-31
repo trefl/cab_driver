@@ -4,6 +4,7 @@ import 'package:cab_driver/brand_colors.dart';
 import 'package:cab_driver/datamodels/tripdetails.dart';
 import 'package:cab_driver/globalvariables.dart';
 import 'package:cab_driver/helpers/helpermethods.dart';
+import 'package:cab_driver/helpers/mapkithelper.dart';
 import 'package:cab_driver/widgets/ProgressDialog.dart';
 import 'package:cab_driver/widgets/TaxiButton.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -239,15 +240,20 @@ class _NewTripPageState extends State<NewTripPage> {
 
   void getLocationUpdates(){
 
+    LatLng oldPosition = LatLng(0, 0);
+
     ridePositionStream = geoLocator.getPositionStream(locationOptions).listen((Position position){
       myPosition = position;
       currentPosition = position;
       LatLng pos = LatLng(position.latitude, position.longitude);
 
+      var rotation = MapKitHelper.getMarkerRotation(oldPosition.latitude, oldPosition.longitude, pos.latitude, pos.longitude);
+
       Marker movingMarker = Marker(
         markerId: MarkerId('moving'),
         position: pos,
         icon: movingMarkerIcon,
+        rotation: rotation,
         infoWindow: InfoWindow(title: 'Current Location'),
       );
 
@@ -257,8 +263,9 @@ class _NewTripPageState extends State<NewTripPage> {
         
         _markers.removeWhere((marker) => marker.markerId.value == 'moving');
         _markers.add(movingMarker);
-        
       });
+
+      oldPosition = pos;
 
     });
 
