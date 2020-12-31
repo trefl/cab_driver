@@ -7,16 +7,12 @@ import 'package:cab_driver/helpers/requesthelper.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class HelperMethods {
-
-
-
-
-
 
 
 
@@ -62,5 +58,15 @@ class HelperMethods {
     int randInt = randomGenerator.nextInt(max);
 
     return randInt.toDouble();
+  }
+
+  static void disableHomTabLocationUpdates(){
+    homeTabPositionStream.pause();
+    Geofire.removeLocation(currentFirebaseUser.uid);
+    }
+  static void enableHomTabLocationUpdates(){
+    homeTabPositionStream.resume();
+    Geofire.setLocation(currentFirebaseUser.uid, currentPosition.latitude, currentPosition.longitude);
+
   }
 }

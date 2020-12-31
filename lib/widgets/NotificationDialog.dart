@@ -3,6 +3,7 @@
 import 'package:cab_driver/brand_colors.dart';
 import 'package:cab_driver/datamodels/tripdetails.dart';
 import 'package:cab_driver/globalvariables.dart';
+import 'package:cab_driver/helpers/helpermethods.dart';
 import 'package:cab_driver/screens/newtrippage.dart';
 import 'package:cab_driver/widgets/BrandDivier.dart';
 import 'package:cab_driver/widgets/ProgressDialog.dart';
@@ -169,6 +170,7 @@ class NotificationDialog extends StatelessWidget {
 
       if(thisRideID == tripDetails.rideID){
         newRideRef.set('accepted');
+        HelperMethods.disableHomTabLocationUpdates();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => NewTripPage(tripDetails: tripDetails,)),
