@@ -20,6 +20,9 @@ String mapKey = 'AIzaSyA_FFj58_p33Oy-PGffn7ACD84BI7HmSkE';
 
 StreamSubscription<Position> homeTabPositionStream;
 
+StreamSubscription<Position> ridePositionStream;
+
+
 final assetsAudioPlayer = AssetsAudioPlayer();
 
 Position currentPosition;

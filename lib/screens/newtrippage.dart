@@ -10,6 +10,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class NewTripPage extends StatefulWidget {
@@ -33,6 +34,23 @@ class _NewTripPageState extends State<NewTripPage> {
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
 
+  var geoLocator = Geolocator();
+  var locationOptions = LocationOptions(accuracy: LocationAccuracy.bestForNavigation);
+
+  BitmapDescriptor movingMarkerIcon;
+
+  Position myPosition;
+
+  void createMarker(){
+    if(movingMarkerIcon == null){
+      ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: Size(2, 2));
+      BitmapDescriptor.fromAssetImage(imageConfiguration, 'images/car_android.png').then((icon){
+        movingMarkerIcon = icon;
+      });
+    }
+  }
+
+
 
   @override
   void initState() {
@@ -43,6 +61,9 @@ class _NewTripPageState extends State<NewTripPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    createMarker();
+
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -70,6 +91,8 @@ class _NewTripPageState extends State<NewTripPage> {
               var pickupLatLng = widget.tripDetails.pickup;
 
               await getDirection(currentLatLng, pickupLatLng);
+
+              getLocationUpdates();
 
 
             },
@@ -211,6 +234,33 @@ class _NewTripPageState extends State<NewTripPage> {
 
 
 
+
+  }
+
+  void getLocationUpdates(){
+
+    ridePositionStream = geoLocator.getPositionStream(locationOptions).listen((Position position){
+      myPosition = position;
+      currentPosition = position;
+      LatLng pos = LatLng(position.latitude, position.longitude);
+
+      Marker movingMarker = Marker(
+        markerId: MarkerId('moving'),
+        position: pos,
+        icon: movingMarkerIcon,
+        infoWindow: InfoWindow(title: 'Current Location'),
+      );
+
+      setState(() {
+        CameraPosition cp = new CameraPosition(target: pos, zoom: 17);
+        rideMapController.animateCamera(CameraUpdate.newCameraPosition(cp));
+        
+        _markers.removeWhere((marker) => marker.markerId.value == 'moving');
+        _markers.add(movingMarker);
+        
+      });
+
+    });
 
   }
 
