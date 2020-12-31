@@ -6,6 +6,7 @@ import 'package:cab_driver/globalvariables.dart';
 import 'package:cab_driver/helpers/helpermethods.dart';
 import 'package:cab_driver/widgets/ProgressDialog.dart';
 import 'package:cab_driver/widgets/TaxiButton.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -32,6 +33,13 @@ class _NewTripPageState extends State<NewTripPage> {
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
 
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    acceptTrip();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -182,6 +190,28 @@ class _NewTripPageState extends State<NewTripPage> {
 
       ),
     );
+  }
+
+  void acceptTrip(){
+    String rideID = widget.tripDetails.rideID;
+    rideRef = FirebaseDatabase.instance.reference().child('rideRequest/$rideID');
+
+    rideRef.child('status').set('accepted');
+    rideRef.child('driver_name').set(currentDriverInfo.fullName);
+    rideRef.child('car_details').set('${currentDriverInfo.carColor} - ${currentDriverInfo.carModel}');
+    rideRef.child('driver_phone').set(currentDriverInfo.phone);
+    rideRef.child('driver_id').set(currentDriverInfo.id);
+
+    Map locationMap = {
+      'latitude': currentPosition.latitude.toString(),
+      'longitude': currentPosition.longitude.toString(),
+    };
+
+    rideRef.child('driver_location').set(locationMap);
+
+
+
+
   }
 
   Future<void> getDirection(LatLng pickupLatLng, LatLng destinationLatLng) async {
