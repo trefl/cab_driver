@@ -153,7 +153,7 @@ class _NewTripPageState extends State<NewTripPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('Daniel Jones', style: TextStyle(fontSize: 22, fontFamily: 'Brand-Bold'),),
+                        Text(widget.tripDetails.riderName, style: TextStyle(fontSize: 22, fontFamily: 'Brand-Bold'),),
 
                         Padding(
                           padding: EdgeInsets.only(right: 10),
@@ -172,7 +172,7 @@ class _NewTripPageState extends State<NewTripPage> {
                         Expanded(
                           child: Container(
                             child: Text(
-                              'Wykroty Polska',
+                              widget.tripDetails.pickupAddress,
                               style: TextStyle(fontSize: 18),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -192,7 +192,7 @@ class _NewTripPageState extends State<NewTripPage> {
                         Expanded(
                           child: Container(
                             child: Text(
-                              'Wrocław Polska',
+                              widget.tripDetails.destinationAddress,
                               style: TextStyle(fontSize: 18),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -274,9 +274,9 @@ class _NewTripPageState extends State<NewTripPage> {
     };
 
     rideRef.child('driver_location').set(locationMap);
-
-
-
+    
+    DatabaseReference historyRef = FirebaseDatabase.instance.reference().child('drivers/${currentFirebaseUser.uid}/history/$rideID');
+    historyRef.set(true);
 
   }
 
