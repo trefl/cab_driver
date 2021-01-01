@@ -44,7 +44,7 @@ class NotificationDialog extends StatelessWidget {
 
             SizedBox(height: 16.0,),
 
-            Text('NEW TRIP REQUEST',
+            Text('Prośba o przejazd',
               style: TextStyle(fontFamily: 'Brand-Bold', fontSize: 18),),
 
             SizedBox(height: 30.0,),

@@ -5,10 +5,10 @@ import 'package:cab_driver/datamodels/tripdetails.dart';
 import 'package:cab_driver/globalvariables.dart';
 import 'package:cab_driver/helpers/helpermethods.dart';
 import 'package:cab_driver/helpers/mapkithelper.dart';
+import 'package:cab_driver/widgets/CollectPaymentDialog.dart';
 import 'package:cab_driver/widgets/ProgressDialog.dart';
 import 'package:cab_driver/widgets/TaxiButton.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
@@ -234,7 +234,9 @@ class _NewTripPageState extends State<NewTripPage> {
                             buttonColor = Colors.red[900];
                           });
                           startTimer();
-
+                        }
+                        else if(status == 'ontrip'){
+                          endTrip();
                         }
 
                       },
@@ -469,5 +471,56 @@ class _NewTripPageState extends State<NewTripPage> {
     timer = Timer.periodic(interval, (timer){
       durationCounter++;
           });
+  }
+
+  void endTrip() async {
+    timer.cancel();
+    
+    HelperMethods.showProgressDialog(context);
+
+    var currentLatLng = LatLng(myPosition.latitude, myPosition.longitude);
+
+    var directionDetails = await HelperMethods.getDirectionDetails(widget.tripDetails.pickup, currentLatLng);
+
+    Navigator.pop(context);
+
+    int fares = HelperMethods.estimateFares(directionDetails, durationCounter);
+    
+    rideRef.child('fares').set(fares.toString());
+    rideRef.child('status').set('ended');
+
+    ridePositionStream.cancel();
+
+    showDialog(
+        context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => CollectPayment(
+        paymentMethod: widget.tripDetails.paymentMethod,
+        fares: fares,
+      )
+    );
+    topUpEarnings(fares);
+  }
+
+  void topUpEarnings(int fares){
+    DatabaseReference earningsRef = FirebaseDatabase.instance.reference().child('drivers/${currentFirebaseUser.uid}/earnings');
+    earningsRef.once().then((DataSnapshot snapshot){
+
+      if(snapshot.value != null){
+        double oldEarnings = double.parse(snapshot.value.toString());
+
+        double adjustedEarnings = (fares.toDouble() * 0.85) + oldEarnings;
+
+        earningsRef.set(adjustedEarnings.toStringAsFixed(2));
+      }
+      else{
+        double adjustedEarnings = (fares.toDouble() * 0.85);
+        earningsRef.set(adjustedEarnings.toStringAsFixed(2));
+
+      }
+
+
+
+    });
   }
 }

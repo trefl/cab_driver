@@ -41,14 +41,14 @@ class HelperMethods {
 
   }
 
-  static int estimateFares (DirectionDetails details){
-    //za km = 0.3 PLN
-    //za min 0.2 PLN
+  static int estimateFares (DirectionDetails details, int durationValue){
+    //za km = 0.5 PLN
+    //za min 0.4 PLN
     //Podstawa = 3 PLN
 
     double baseFare = 3;
-    double distanceFare = (details.distanceValue/1000) * 0.3;
-    double timeFare = (details.durationValue/60) * 0.2;
+    double distanceFare = (details.distanceValue/1000) * 0.5;
+    double timeFare = (durationValue/60) * 0.4;
 
     double totalFare = baseFare + distanceFare + timeFare;
 
