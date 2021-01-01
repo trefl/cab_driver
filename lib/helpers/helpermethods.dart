@@ -4,9 +4,11 @@ import 'dart:math';
 import 'package:cab_driver/datamodels/directiondetails.dart';
 import 'package:cab_driver/globalvariables.dart';
 import 'package:cab_driver/helpers/requesthelper.dart';
+import 'package:cab_driver/widgets/ProgressDialog.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -69,4 +71,14 @@ class HelperMethods {
     Geofire.setLocation(currentFirebaseUser.uid, currentPosition.latitude, currentPosition.longitude);
 
   }
+
+  static void showProgressDialog(context){
+
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) => ProgressDialog(status: 'Proszę czekać',),
+    );
+  }
+
 }

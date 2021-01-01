@@ -7,7 +7,7 @@ class MapKitHelper{
 
     var rotation = SphericalUtil.computeHeading(
         LatLng(sourceLat, sourceLng),
-        LatLng(destinationLng, destinationLat)
+        LatLng(destinationLat, destinationLng)
     );
 
     return rotation;

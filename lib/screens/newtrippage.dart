@@ -48,6 +48,13 @@ class _NewTripPageState extends State<NewTripPage> {
 
   bool isRequestingDirection = false;
 
+  String buttonTitle = 'Przyjazd';
+  Color buttonColor = BrandColors.colorGreen;
+
+  Timer timer;
+
+  int durationCounter = 0;
+
   void createMarker(){
     if(movingMarkerIcon == null){
       ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: Size(2, 2));
@@ -199,9 +206,36 @@ class _NewTripPageState extends State<NewTripPage> {
                     SizedBox(height: 25,),
 
                     TaxiButton(
-                      title: 'Przyjazd',
-                      color: BrandColors.colorGreen,
-                      onPressed: (){
+                      title: buttonTitle,
+                      color: buttonColor,
+                      onPressed: () async {
+
+                        if(status == 'accepted'){
+
+                          status = 'arrived';
+                          rideRef.child('status').set(('arrived'));
+
+                          setState(() {
+                            buttonTitle = 'ROZPOCZNIJ';
+                            buttonColor = BrandColors.colorAccentPurple;
+                          });
+
+                          HelperMethods.showProgressDialog(context);
+                          await getDirection(widget.tripDetails.pickup, widget.tripDetails.destination);
+
+                          Navigator.pop(context);
+                        }
+                        else if(status == 'arrived'){
+                          status = 'ontrip';
+                          rideRef.child('status').set('ontrip');
+
+                          setState(() {
+                            buttonTitle = 'KONIEC';
+                            buttonColor = Colors.red[900];
+                          });
+                          startTimer();
+
+                        }
 
                       },
 
@@ -255,7 +289,9 @@ class _NewTripPageState extends State<NewTripPage> {
 
       var rotation = MapKitHelper.getMarkerRotation(oldPosition.latitude, oldPosition.longitude, pos.latitude, pos.longitude);
 
-      Marker movingMarker = Marker(
+      print('my rotation = $rotation');
+
+      Marker movingMaker = Marker(
         markerId: MarkerId('moving'),
         position: pos,
         icon: movingMarkerIcon,
@@ -268,7 +304,7 @@ class _NewTripPageState extends State<NewTripPage> {
         rideMapController.animateCamera(CameraUpdate.newCameraPosition(cp));
         
         _markers.removeWhere((marker) => marker.markerId.value == 'moving');
-        _markers.add(movingMarker);
+        _markers.add(movingMaker);
       });
 
       oldPosition = pos;
@@ -426,5 +462,12 @@ class _NewTripPageState extends State<NewTripPage> {
       _circles.add(pickupCircle);
       _circles.add(destinationCircle);
     });
+  }
+
+  void startTimer(){
+    const interval = Duration(seconds: 1);
+    timer = Timer.periodic(interval, (timer){
+      durationCounter++;
+          });
   }
 }
