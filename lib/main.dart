@@ -1,3 +1,4 @@
+import 'package:cab_driver/dataprovider.dart';
 import 'package:cab_driver/globalvariables.dart';
 import 'package:cab_driver/screens/login.dart';
 import 'package:cab_driver/screens/mainpage.dart';
@@ -7,6 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
+
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,23 +41,26 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
+    return ChangeNotifierProvider(
+      create: (context) => AppData(),
+      child: MaterialApp(
+        theme: ThemeData(
 
-        fontFamily: 'Brand-Regular',
-        primarySwatch: Colors.blue,
+          fontFamily: 'Brand-Regular',
+          primarySwatch: Colors.blue,
 
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        initialRoute: (currentFirebaseUser == null) ? LoginPage.id : MainPage.id,
+        //initialRoute: RegistrationPage.id,
+        routes: {
+          MainPage.id: (context) => MainPage(),
+          RegistrationPage.id: (context) => RegistrationPage(),
+          VehicleInfoPage.id: (context) => VehicleInfoPage(),
+          LoginPage.id: (context) => LoginPage(),
+
+        },
       ),
-      initialRoute: (currentFirebaseUser == null) ? LoginPage.id : MainPage.id,
-      //initialRoute: RegistrationPage.id,
-      routes: {
-        MainPage.id: (context) => MainPage(),
-        RegistrationPage.id: (context) => RegistrationPage(),
-        VehicleInfoPage.id: (context) => VehicleInfoPage(),
-        LoginPage.id: (context) => LoginPage(),
-
-      },
     );
   }
 }

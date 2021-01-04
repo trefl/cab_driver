@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cab_driver/brand_colors.dart';
 import 'package:cab_driver/datamodels/driver.dart';
 import 'package:cab_driver/globalvariables.dart';
+import 'package:cab_driver/helpers/helpermethods.dart';
 import 'package:cab_driver/helpers/pushnotificationservice.dart';
 import 'package:cab_driver/widgets/AvailabilityButton.dart';
 import 'package:cab_driver/widgets/ConfirmSheet.dart';
@@ -57,6 +58,8 @@ class _HomeTabState extends State<HomeTab> {
 
     pushNotificationService.initialize(context);
     pushNotificationService.getToken();
+
+    HelperMethods.getHistoryInfo(context);
   }
   @override
   void initState() {

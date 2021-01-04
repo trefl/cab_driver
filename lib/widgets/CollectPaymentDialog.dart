@@ -31,7 +31,7 @@ class CollectPayment extends StatelessWidget {
             
             SizedBox(height: 20,),
             
-            Text('${paymentMethod.toUpperCase()} PŁATNOŚĆ'),
+            Text('PŁATNOŚĆ GOTÓWKĄ' ),
 
             SizedBox(height: 20,),
 

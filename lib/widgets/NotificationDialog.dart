@@ -5,6 +5,8 @@ import 'package:cab_driver/datamodels/tripdetails.dart';
 import 'package:cab_driver/globalvariables.dart';
 import 'package:cab_driver/helpers/helpermethods.dart';
 import 'package:cab_driver/screens/newtrippage.dart';
+import 'package:cab_driver/screens/newtrippage.dart';
+import 'package:cab_driver/screens/newtrippage.dart';
 import 'package:cab_driver/widgets/BrandDivier.dart';
 import 'package:cab_driver/widgets/ProgressDialog.dart';
 import 'package:cab_driver/widgets/TaxiButton.dart';
